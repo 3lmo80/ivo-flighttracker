@@ -69,7 +69,7 @@ SAMPLE_PATH = os.path.join(DATA_DIR, "sample_data.json")
 MONTHLY_PATH = os.path.join(DATA_DIR, "monthly_lowest.json")
 
 # Amadeus API
-AMADEUS_BASE = "https://test.api.amadeus.com"  # 'test' omgeving volstaat voor dit doel
+AMADEUS_BASE = "https://api.amadeus.com"  # 'test' omgeving volstaat voor dit doel
 TIMEOUT = 30
 RETRY = 3
 
