@@ -53,7 +53,7 @@ ROUTES_QS = [
 ROUTES = ROUTES_QS if QUICKSTART else ROUTES_ALL
 
 # QuickStart: slechts 3 vertrekdagen in jouw venster (snel)
-QS_START_DATES = ["2026-07-20", "2026-07-25", "2026-08-01"]
+QS_START_DATES = ["2026-03-05", "2026-03-12", "2026-03-19"]
 
 # Reisperiode/delta's
 TRIP_LEN = 21
