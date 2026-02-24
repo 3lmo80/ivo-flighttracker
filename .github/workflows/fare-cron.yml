@@ -1,9 +1,6 @@
 name: Update flight data (2x/day)
 
 on:
-  schedule:
-    - cron: "15 5 * * *"     # 05:15 UTC  (= 06:15 NL winter, 07:15 NL zomer)
-    - cron: "15 17 * * *"    # 17:15 UTC (= 18:15 NL winter, 19:15 NL zomer)
   workflow_dispatch:
 
 jobs:
