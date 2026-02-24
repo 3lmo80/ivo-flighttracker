@@ -1,34 +1,51 @@
-name: Update flight data (2x/day)
+name: Flight fares (manual, QuickStart)
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}   # handmatige start in GitHub Actions UI
+  # schedule:             # tijdelijk UIT — geen cron, dus ook geen e-mailnotificaties bij failures
+  #   - cron: "0 3,15 * * *"
+
+permissions:
+  contents: write
 
 jobs:
-  run:
+  fetch:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
-      - name: Install deps
-        run: pip install requests
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
 
-      - name: Fetch flight data
+      - name: Fetch prices (QuickStart)
         env:
-          AMADEUS_API_KEY: ${{ secrets.AMADEUS_API_KEY }}
-          AMADEUS_API_SECRET: ${{ secrets.AMADEUS_API_SECRET }}
+          KIWI_API_KEY: ${{ secrets.KIWI_API_KEY }}
+          # QuickStart: 1 routepaar en klein venster voor snelle zichtbare output
+          ROUTES: "AMS:BCN"
+          DAYS_AHEAD: "14"
+          CURRENCY: "EUR"
         run: |
           python tools/fetch_prices.py
 
-      - name: Commit & push updated JSON
+      - name: Commit & push data
         run: |
-          git config user.name "Flightbot"
-          git config user.email "flightbot@users.noreply.github.com"
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/sample_data.json data/monthly_lowest.json || true
-          git commit -m "auto: update fares $(date -u +'%Y-%m-%dT%H:%MZ')" || echo "No changes"
-          git push
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore(data): update fares [skip ci]"
+            git push
+          fi
