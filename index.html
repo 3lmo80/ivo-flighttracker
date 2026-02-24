@@ -2,126 +2,32 @@
 <html lang="nl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ivo's Flighttracker</title>
-  <link rel="stylesheet" href="assets/styles.css" />
-  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script defer src="assets/app.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ivo's Flightsdashboard</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 2rem; }
+    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+    .meta { font-size:.9rem; opacity:.75; }
+    canvas { max-width: 1200px; width: 100%; height: 520px; }
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="dot">●</span>
-      <h1>Ivo's Flighttracker</h1>
-      <span class="beta">LIVE – geautomatiseerde updates</span>
-    </div>
-    <div class="url">ivo.eigen.flightdashboard.app</div>
+  <header>
+    <h1>✈︎ Ivo's Flightsdashboard</h1>
+    <div class="meta" id="generatedAt">Laden…</div>
   </header>
 
-  <main class="container">
-    <section class="panel filters">
-      <h2>Zoekinstellingen</h2>
-      <form id="filterForm">
-        <div class="grid">
-          <div class="field">
-            <label>Bestemming (land → stad)</label>
-            <select id="countrySelect">
-              <option value="Portugal">Portugal</option>
-              <option value="Kroatië">Kroatië</option>
-              <option value="Thailand">Thailand</option>
-            </select>
-            <select id="citySelect"></select>
-          </div>
+  <section>
+    <p>
+      We tonen per route de <strong>laagste prijs per dag</strong> (bron: <code>data/monthly_lowest.json</code>).  
+      Klik in de legenda om routes aan/uit te zetten.
+    </p>
+    <canvas id="chart"></canvas>
+  </section>
 
-          <div class="field">
-            <label>Vertrek (18 juli – 26 aug 2026, ~3 weken)</label>
-            <input type="date" id="startDate" value="2026-07-18" min="2026-07-18" max="2026-08-26" />
-            <input type="number" id="tripLength" value="21" min="7" max="30" />
-            <small>Reisduur in dagen (±2 dagen flexibiliteit)</small>
-          </div>
-
-          <div class="field">
-            <label>Voorkeursluchthaven VERTREK</label>
-            <div class="checkrow">
-              <label><input type="checkbox" id="useAMS" checked /> AMS (voorkeur)</label>
-              <label><input type="checkbox" id="useEIN" /> EIN (goedkoper alternatief)</label>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Overstappen</label>
-            <select id="maxStops">
-              <option value="0">Non‑stop</option>
-              <option value="1" selected>Max 1</option>
-              <option value="2">Max 2</option>
-              <option value="3">Geen limiet</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label>Maximale overstaptijd (uren)</label>
-            <input type="number" id="maxLayover" min="1" max="12" value="4" />
-          </div>
-
-          <div class="field">
-            <label>Airlines uitsluiten (optioneel)</label>
-            <input type="text" id="excludeAirlines" placeholder="Bijv. Airline1, Airline2" />
-          </div>
-
-          <div class="field">
-            <button type="submit" class="primary">Toon analyse</button>
-          </div>
-        </div>
-      </form>
-    </section>
-
-    <section class="panel">
-      <h2>Beste aankoopmoment (historisch patroon)</h2>
-      <canvas id="buyTimingChart" height="120"></canvas>
-      <p class="note">Grafiek op basis van <b>dagelijkse momentopnames</b>. In live‑modus worden deze automatisch ververst (2× per dag).</p>
-    </section>
-
-    <section class="panel">
-      <h2>Gemiddelde prijs per airline (geselecteerde filters)</h2>
-      <table class="datatable" id="airlineTable">
-        <thead>
-          <tr>
-            <th>Airline</th>
-            <th>Gem. prijs (€)</th>
-            <th>Gem. stops</th>
-            <th>Gem. totale overstaptijd</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <section class="panel">
-      <h2>Ritdetails (beste gevonden per vertrekdag)</h2>
-      <table class="datatable" id="itineraryTable">
-        <thead>
-          <tr>
-            <th>Datum</th>
-            <th>Route</th>
-            <th>Airline</th>
-            <th>Stops</th>
-            <th>Overstaptijd (h)</th>
-            <th>Prijs (€)</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-
-    <section class="panel">
-      <h2>Laagste prijs per maand (week‑buckets)</h2>
-      <canvas id="calendarChart" height="120"></canvas>
-      <p class="note">De 12 maanden (jan‑dec) met elk 4 week‑buckets (W1‑W4). Indien beschikbaar tonen we <i>vorig jaar</i> in blauw als referentie.</p>
-    </section>
-  </main>
-
-  <footer class="footer">
-    Persoonlijk dashboard voor Ivo • Automatische updates 2×/dag • Laatst geladen: <span id="lastLoaded">—</span>
-  </footer>
+  <script type="module" src="assets/app.js"></script>
 </body>
 </html>
